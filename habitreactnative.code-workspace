@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "habitreactnative",
+			"path": "."
+		},
+		{
+			"name": "habbitapp",
+			"path": "../habitapp/habbitapp"
+		}
+	],
+	"settings": {}
+}
