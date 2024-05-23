@@ -8,6 +8,7 @@ import {
   Text,
 } from "react-native";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
+import Goals from "./Goals";
 
 const Register = ({ navigation }) => {
   const [data, setData] = useState({
@@ -15,8 +16,7 @@ const Register = ({ navigation }) => {
     email: "",
     password: "",
   });
-  const registerUser = async (e) => {
-    e.preventDefault();
+  const registerUser = async () => {
     const { name, email, password } = data;
     try {
       const header = {
@@ -47,7 +47,7 @@ const Register = ({ navigation }) => {
           text1: `Hello ${data.name}`,
           text2: "Register Sucessful, Please Login!",
         });
-        console.log(data.email, data.password);
+        console.log(data);
         navigation.navigate("Login");
       }
     } catch (error) {
@@ -58,7 +58,7 @@ const Register = ({ navigation }) => {
 
   return (
     <SafeAreaView>
-      <TextInput
+      {/* <TextInput
         style={styles.input}
         onChangeText={(text) => setData({ ...data, name: text })}
         value={data?.name}
@@ -75,20 +75,39 @@ const Register = ({ navigation }) => {
         onChangeText={(text) => setData({ ...data, password: text })}
         value={data?.password}
         placeholder="password"
-      />
-      <TouchableOpacity onPress={registerUser}>
-        <Text>Register</Text>
+      /> */}
+      <TouchableOpacity onPress={registerUser} style={styles.loginBtn}>
+        <Text style={styles.loginBtnText}>Register</Text>
       </TouchableOpacity>
+      <Goals />
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   input: {
-    height: 40,
-    margin: 12,
+    width: "90%",
+    height: 50,
     borderWidth: 1,
-    padding: 10,
+    borderColor: "black",
+    marginTop: 20,
+    alignSelf: "center",
+    paddingLeft: 20,
+    borderRadius: 10,
+  },
+  loginBtn: {
+    width: "80%",
+    height: 50,
+    backgroundColor: "black",
+    borderRadius: 10,
+    marginTop: 50,
+    alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loginBtnText: {
+    color: "white",
+    fontSize: 18,
   },
 });
 

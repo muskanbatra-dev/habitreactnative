@@ -8,6 +8,8 @@ import {
   Text,
 } from "react-native";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
+import * as SecureStore from "expo-secure-store";
+
 const Login = ({ navigation }) => {
   const [data, setData] = useState({
     email: "",
@@ -36,12 +38,14 @@ const Login = ({ navigation }) => {
         });
       } else {
         setData({});
-        console.log(data, "mmm");
+        SecureStore.setItemAsync("deviceToken", data?.data?.token);
         Toast.show({
           type: "success",
           text1: `Hello ${data.name}`,
           text2: "Log in sucessful",
         });
+        console.log(data, "ggdata");
+        console.log(data?.data, "userID");
         navigation.navigate("Goals");
       }
     } catch (error) {
@@ -73,11 +77,28 @@ const Login = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   input: {
-    height: 40,
-    margin: 12,
+    width: "90%",
+    height: 50,
     borderWidth: 1,
-    padding: 10,
+    borderColor: "black",
+    marginTop: 20,
+    alignSelf: "center",
+    paddingLeft: 20,
+    borderRadius: 10,
+  },
+  loginBtn: {
+    width: "80%",
+    height: 50,
+    backgroundColor: "black",
+    borderRadius: 10,
+    marginTop: 50,
+    alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loginBtnText: {
+    color: "white",
+    fontSize: 18,
   },
 });
-
 export default Login;
