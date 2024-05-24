@@ -12,7 +12,7 @@ import {
   ScrollView,
 } from "react-native";
 import Checkbox from "expo-checkbox";
-
+import axios from "axios";
 const DATA = [
   {
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
@@ -34,20 +34,32 @@ const Item = ({ title }) => (
   </View>
 );
 
-const Goals = () => {
+const Goals = ({ route, navigation }) => {
   const [showModal, setShowModal] = useState(false);
-  const [goalTitle, setgoalTitle] = useState("");
-  const [goalDescription, setgoalDescription] = useState("");
-  const [taskTitle, setTaskTitle] = useState("");
-  const [taskDescription, setTaskDescription] = useState("");
-  const [quantity, setQuantity] = useState(0);
-  const [frequency, setFrequency] = useState(0);
-  const [frequecyType, setFrequencyType] = useState("");
-  const [reminder, setReminder] = useState(false);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [min_timeline, setmin_Timeline] = useState(new Date());
   const [max_timeline, setmax_Timeline] = useState(new Date());
+  const [tasks, setTasks] = useState({
+    frequency: {
+      type: "",
+      times_per_day: 0,
+      days_of_week: [],
+    },
+    reminders: {
+      enabled: false,
+      times: [""],
+      auto_suggestions: [""],
+    },
+    task_id: "",
+    name: "",
+    description: "",
+    quantity: 0,
+  });
+  const userId = route.params;
+  const id = userId.userId;
+  console.log("userid", userId);
   const createGoals = async () => {
-    const { userId } = data;
     try {
       const header = {
         headers: {
@@ -55,16 +67,14 @@ const Goals = () => {
         },
       };
       const { data } = await axios.post(
-        " http://10.0.2.2:3000/register ",
-        {
-          userId,
-        },
+        " http://10.0.2.2:3000/goals/createdgoal",
+        { id, goalTitle, goalDescription, min_timeline, max_timeline },
         header
       );
       if (data.error) {
         Toast.show({
           type: "error",
-          text1: `Hello ${data.name}`,
+          text1: `Hello abc`,
           text1: data.error,
         });
       } else {
@@ -72,11 +82,43 @@ const Goals = () => {
 
         Toast.show({
           type: "success",
-          text1: `Hello ${data.name}`,
+          text1: `Hello abc`,
           text2: "Register Sucessful, Please Login!",
         });
         console.log(data);
-        navigation.navigate("Login");
+      }
+    } catch (error) {
+      console.log("going to catch");
+      console.log(error);
+    }
+  };
+  const getGoals = async () => {
+    try {
+      const header = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const { data } = await axios.post(
+        " http://10.0.2.2:3000/goals/createdgoal",
+        { id, goalTitle, goalDescription, min_timeline, max_timeline },
+        header
+      );
+      if (data.error) {
+        Toast.show({
+          type: "error",
+          text1: `Hello abc`,
+          text1: data.error,
+        });
+      } else {
+        setData({});
+
+        Toast.show({
+          type: "success",
+          text1: `Hello abc`,
+          text2: "Register Sucessful, Please Login!",
+        });
+        console.log(data);
       }
     } catch (error) {
       console.log("going to catch");
@@ -105,14 +147,14 @@ const Goals = () => {
         <ScrollView>
           <TextInput
             style={styles.input}
-            onChangeText={(text) => setgoalTitle(text)}
-            value={goalTitle}
+            onChangeText={(text) => setTitle(text)}
+            value={title}
             placeholder="title"
           />
           <TextInput
             style={styles.input}
-            onChangeText={(text) => setgoalDescription(text)}
-            value={goalDescription}
+            onChangeText={(text) => setDescription(text)}
+            value={description}
             placeholder="description"
           />
           <TextInput
@@ -129,37 +171,69 @@ const Goals = () => {
           />
           <TextInput
             style={styles.input}
-            onChangeText={(text) => setTaskTitle(text)}
-            value={taskTitle}
-            placeholder="task_title"
+            onChangeText={(text) => setData({ ...data, name: text })}
+            value={tasks?.frequency.days_of_week}
+            placeholder="frequency"
           />
           <TextInput
             style={styles.input}
-            onChangeText={(text) => setTaskDescription(text)}
-            value={taskDescription}
-            placeholder="task_description"
+            onChangeText={(text) => setData({ ...data, name: text })}
+            value={tasks?.frequency.days_of_week}
+            placeholder="frequency"
           />
           <TextInput
             style={styles.input}
-            onChangeText={(text) => setQuantity(text)}
-            value={quantity}
-            placeholder="task_quantity"
+            onChangeText={(text) => setData({ ...data, name: text })}
+            value={tasks?.frequency.days_of_week}
+            placeholder="frequency"
           />
           <TextInput
             style={styles.input}
-            onChangeText={(text) => setFrequency(text)}
-            value={frequency}
-            placeholder="task_frequency"
+            onChangeText={(text) => setData({ ...data, name: text })}
+            value={tasks?.reminders?.auto_suggestions}
+            placeholder="reminders"
+          />
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => setData({ ...data, name: text })}
+            value={tasks?.reminders?.auto_suggestions}
+            placeholder="reminders"
+          />
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => setData({ ...data, name: text })}
+            value={tasks?.reminders?.auto_suggestions}
+            placeholder="reminders"
+          />
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => setData({ ...data, name: text })}
+            value={data?.name}
+            placeholder="name"
+          />
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => setData({ ...data, name: text })}
+            value={tasks?.name}
+            placeholder="description"
+          />
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => setData({ ...data, name: text })}
+            value={tasks?.description}
+            placeholder="quantity"
           />
           <Checkbox
             style={styles.checkbox}
-            value={reminder}
+            value={tasks?.quantity}
             onValueChange={setReminder}
           />
           <Text>bkbckackhavs</Text>
           <TouchableOpacity
             style={styles.loginBtn}
             onPress={() => {
+              const id = route.params;
+              createGoals();
               setShowModal(!showModal);
             }}
           >

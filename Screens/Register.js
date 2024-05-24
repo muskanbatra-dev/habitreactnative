@@ -8,7 +8,6 @@ import {
   Text,
 } from "react-native";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
-import Goals from "./Goals";
 
 const Register = ({ navigation }) => {
   const [data, setData] = useState({
@@ -58,7 +57,7 @@ const Register = ({ navigation }) => {
 
   return (
     <SafeAreaView>
-      {/* <TextInput
+      <TextInput
         style={styles.input}
         onChangeText={(text) => setData({ ...data, name: text })}
         value={data?.name}
@@ -75,11 +74,10 @@ const Register = ({ navigation }) => {
         onChangeText={(text) => setData({ ...data, password: text })}
         value={data?.password}
         placeholder="password"
-      /> */}
+      />
       <TouchableOpacity onPress={registerUser} style={styles.loginBtn}>
         <Text style={styles.loginBtnText}>Register</Text>
       </TouchableOpacity>
-      <Goals />
     </SafeAreaView>
   );
 };

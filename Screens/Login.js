@@ -34,19 +34,19 @@ const Login = ({ navigation }) => {
       if (data.error) {
         Toast.show({
           type: "error",
-          text1: data.error,
+          text1: data?.error,
         });
       } else {
         setData({});
         SecureStore.setItemAsync("deviceToken", data?.data?.token);
         Toast.show({
           type: "success",
-          text1: `Hello ${data.name}`,
+          text1: `Hello ${data?.name}`,
           text2: "Log in sucessful",
         });
         console.log(data, "ggdata");
-        console.log(data?.data, "userID");
-        navigation.navigate("Goals");
+        console.log(data?._doc?._id, "userID");
+        navigation.navigate("Goals", { userId: data?._doc?._id });
       }
     } catch (error) {
       console.log("going to catch");
@@ -68,8 +68,8 @@ const Login = ({ navigation }) => {
         value={data?.password}
         placeholder="password"
       />
-      <TouchableOpacity onPress={loginUser}>
-        <Text>Login</Text>
+      <TouchableOpacity onPress={loginUser} style={styles.loginBtn}>
+        <Text style={styles.loginBtnText}>Login</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
