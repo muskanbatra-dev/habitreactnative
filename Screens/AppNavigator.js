@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from "./Login";
 import Register from "./Register";
 import Goals from "./Goals";
+import Toast from "react-native-toast-message";
 const AppNavigator = () => {
   const Stack = createNativeStackNavigator();
   return (
@@ -30,6 +31,7 @@ const AppNavigator = () => {
           }}
         />
       </Stack.Navigator>
+      <Toast />
     </NavigationContainer>
   );
 };

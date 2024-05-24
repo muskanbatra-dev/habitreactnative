@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
   View,
@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import Checkbox from "expo-checkbox";
 import axios from "axios";
+import Ionicons from "@expo/vector-icons/Ionicons";
 const DATA = [
   {
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
@@ -27,7 +28,7 @@ const DATA = [
     title: "Third Item",
   },
 ];
-
+import { Toast } from "react-native-toast-message/lib/src/Toast";
 const Item = ({ title }) => (
   <View style={styles.item}>
     <Text style={styles.title}>{title}</Text>
@@ -35,11 +36,17 @@ const Item = ({ title }) => (
 );
 
 const Goals = ({ route, navigation }) => {
+  const [goals, setGoals] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [reminder, setReminder] = useState(false);
   const [min_timeline, setmin_Timeline] = useState(new Date());
   const [max_timeline, setmax_Timeline] = useState(new Date());
+  const [userTimeline, setuserTimeline] = useState({
+    start_date: new Date(),
+    end_date: new Date(),
+  });
   const [tasks, setTasks] = useState({
     frequency: {
       type: "",
@@ -56,9 +63,10 @@ const Goals = ({ route, navigation }) => {
     description: "",
     quantity: 0,
   });
-  const userId = route.params;
-  const id = userId.userId;
+  const Id = route.params;
+  const userId = Id.userId;
   console.log("userid", userId);
+
   const createGoals = async () => {
     try {
       const header = {
@@ -68,30 +76,84 @@ const Goals = ({ route, navigation }) => {
       };
       const { data } = await axios.post(
         " http://10.0.2.2:3000/goals/createdgoal",
-        { id, goalTitle, goalDescription, min_timeline, max_timeline },
+
+        {
+          userId: "665019c92156c48f8abadb0e",
+          title: "Learn JavaScript",
+          description: "Complete the JavaScript course and build projects.",
+          minTimeline: "2024-06-01T00:00:00Z",
+          maxTimeline: "2024-12-01T00:00:00Z",
+          userTimeline: {
+            start_date: "2024-06-15T00:00:00Z",
+            end_date: "2024-11-15T00:00:00Z",
+          },
+          tasks: [
+            {
+              name: "Watch Lectures",
+              description: "Watch the course lectures on JavaScript basics.",
+              quantity: 30,
+              frequency: {
+                type: "daily",
+                times_per_day: 1,
+              },
+              reminders: {
+                enabled: true,
+                times: ["09:00"],
+                auto_suggestions: ["08:00"],
+              },
+            },
+            {
+              name: "Complete Exercises",
+              description:
+                "Complete coding exercises at the end of each lecture.",
+              quantity: 30,
+              frequency: {
+                type: "daily",
+                times_per_day: 1,
+              },
+              reminders: {
+                enabled: true,
+                times: ["10:00"],
+                auto_suggestions: ["09:30"],
+              },
+            },
+            {
+              name: "Build Projects",
+              description: "Work on JavaScript projects to reinforce learning.",
+              quantity: 5,
+              frequency: {
+                type: "weekly",
+                days_per_week: 1,
+              },
+              reminders: {
+                enabled: true,
+                times: ["14:00"],
+                auto_suggestions: ["13:00"],
+              },
+            },
+          ],
+        },
         header
       );
       if (data.error) {
         Toast.show({
           type: "error",
-          text1: `Hello abc`,
-          text1: data.error,
+          text1: data?.error,
         });
       } else {
-        setData({});
-
         Toast.show({
           type: "success",
-          text1: `Hello abc`,
-          text2: "Register Sucessful, Please Login!",
+          text1: `Hello bjbjb`,
+          text2: "Log in sucessful",
         });
-        console.log(data);
+        console.log(data, "ggdata");
       }
     } catch (error) {
       console.log("going to catch");
       console.log(error);
     }
   };
+
   const getGoals = async () => {
     try {
       const header = {
@@ -99,33 +161,28 @@ const Goals = ({ route, navigation }) => {
           "Content-Type": "application/json",
         },
       };
-      const { data } = await axios.post(
-        " http://10.0.2.2:3000/goals/createdgoal",
-        { id, goalTitle, goalDescription, min_timeline, max_timeline },
-        header
-      );
+      const { data } = await axios.get(`http://10.0.2.2:3000/goals/:${userId}`);
       if (data.error) {
         Toast.show({
           type: "error",
-          text1: `Hello abc`,
-          text1: data.error,
+          text1: data?.error,
         });
       } else {
-        setData({});
-
         Toast.show({
           type: "success",
-          text1: `Hello abc`,
-          text2: "Register Sucessful, Please Login!",
+          text1: `Hello bjbjb`,
+          text2: "Log in sucessful",
         });
-        console.log(data);
+        console.log(data, "gvgv");
       }
     } catch (error) {
       console.log("going to catch");
       console.log(error);
     }
   };
-
+  useEffect(() => {
+    getGoals();
+  }, []);
   return (
     <SafeAreaView>
       <FlatList
@@ -169,70 +226,84 @@ const Goals = ({ route, navigation }) => {
             value={max_timeline}
             placeholder="max_timeline"
           />
+          <Text>add taska</Text>
           <TextInput
             style={styles.input}
-            onChangeText={(text) => setData({ ...data, name: text })}
-            value={tasks?.frequency.days_of_week}
-            placeholder="frequency"
-          />
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => setData({ ...data, name: text })}
-            value={tasks?.frequency.days_of_week}
-            placeholder="frequency"
-          />
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => setData({ ...data, name: text })}
-            value={tasks?.frequency.days_of_week}
-            placeholder="frequency"
-          />
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => setData({ ...data, name: text })}
-            value={tasks?.reminders?.auto_suggestions}
-            placeholder="reminders"
-          />
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => setData({ ...data, name: text })}
-            value={tasks?.reminders?.auto_suggestions}
-            placeholder="reminders"
-          />
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => setData({ ...data, name: text })}
-            value={tasks?.reminders?.auto_suggestions}
-            placeholder="reminders"
-          />
-          <TextInput
-            style={styles.input}
-            onChangeText={(text) => setData({ ...data, name: text })}
-            value={data?.name}
+            onChangeText={(text) => setTasks({ ...tasks, name: text })}
+            value={tasks?.name}
             placeholder="name"
           />
           <TextInput
             style={styles.input}
-            onChangeText={(text) => setData({ ...data, name: text })}
-            value={tasks?.name}
+            onChangeText={(text) => setTasks({ ...tasks, description: text })}
+            value={tasks?.description}
             placeholder="description"
           />
           <TextInput
             style={styles.input}
-            onChangeText={(text) => setData({ ...data, name: text })}
-            value={tasks?.description}
+            onChangeText={(text) => setTasks({ ...tasks, quantity: text })}
+            value={tasks?.quantity}
             placeholder="quantity"
           />
-          <Checkbox
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) =>
+              setTasks({
+                ...tasks?.frequency,
+                days_of_week: text,
+              })
+            }
+            value={tasks?.frequency.days_of_week}
+            placeholder="frequency"
+          />
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) =>
+              setTasks({
+                ...tasks?.frequency,
+                times_per_day: text,
+              })
+            }
+            value={tasks?.frequency?.times_per_day}
+            placeholder="frequency_times_per_day"
+          />
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => ({ ...tasks, type: text })}
+            value={tasks?.frequency?.type}
+            placeholder="frequencytype"
+          />
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => ({
+              ...tasks?.reminders,
+              auto_suggestions: text,
+            })}
+            value={tasks?.reminders?.auto_suggestions}
+            placeholder="remindersauto_suggestions"
+          />
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => ({ ...tasks?.reminders, enabled: text })}
+            value={tasks?.reminders?.enabled}
+            placeholder="remindersenabled"
+          />
+          <TextInput
+            style={styles.input}
+            onChangeText={(text) => ({ ...tasks?.reminders, times: text })}
+            value={tasks?.reminders?.times}
+            placeholder="reminders"
+          />
+
+          {/* <Checkbox
             style={styles.checkbox}
             value={tasks?.quantity}
             onValueChange={setReminder}
-          />
-          <Text>bkbckackhavs</Text>
+          /> */}
+          <Text>Reminder</Text>
           <TouchableOpacity
             style={styles.loginBtn}
             onPress={() => {
-              const id = route.params;
               createGoals();
               setShowModal(!showModal);
             }}
@@ -245,8 +316,9 @@ const Goals = ({ route, navigation }) => {
         onPress={() => {
           setShowModal(!showModal);
         }}
+        style={styles.addbtn}
       >
-        <Text>create goal</Text>
+        <Ionicons name="add-circle" size={32} color="blue" />
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -339,6 +411,11 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
     borderRadius: 10,
     marginTop: 50,
+    alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  addbtn: {
     alignSelf: "center",
     justifyContent: "center",
     alignItems: "center",
